@@ -21,8 +21,26 @@ namespace jeu_du_pendu
                 {
                     Console.Write("_ ");
                 }
-             
+
             }
+        }
+        static bool ToutesLettresDevinees(string mots, List<char> lettres)
+        {
+
+            foreach (var lettre in lettres)
+            {
+                mots = mots.Replace(lettres.ToString(), ""); // prendre la premier letre du tableau et le remplacer en une ch vide 
+
+            }
+
+            if (mots.Length == 0)
+
+            {
+                return true;
+            }
+
+            return false;
+
         }
 
         static char DemenderUneLettre()
@@ -32,7 +50,6 @@ namespace jeu_du_pendu
 
             {
 
-                Console.WriteLine(" ");
                 Console.Write("Rentrez une lettre : ");
                 string reponse = Console.ReadLine();
                 if (reponse.Length == 1) //longueur du caractere 
@@ -50,7 +67,10 @@ namespace jeu_du_pendu
         static void DevinerMots(string mots)
         {
             var lettresDevines = new List<char>();
-            while (true)
+            const int NBR_VIE = 6;
+            int ViesRestant = NBR_VIE;
+
+            while (ViesRestant > 0)
 
             {
 
@@ -63,14 +83,42 @@ namespace jeu_du_pendu
                 {
                     Console.WriteLine(" Cette lettre est dans le mots ");
                     lettresDevines.Add(lettre);
+
+
+
+                    if (ToutesLettresDevinees(mots, lettresDevines))
+                    {
+
+                      
+                        break;
+
+
+                    }
                 }
                 else
                 {
                     Console.WriteLine(" Cette lettre n'est  pas dans le mots ");
+                    ViesRestant--;
+                    Console.WriteLine(" Vie restant : " + ViesRestant);
 
                 }
                 Console.WriteLine();
             }
+
+
+            if (ViesRestant == 0)
+            {
+                Console.WriteLine("  PERDU ! LE MOTS ETAIT : " + mots);
+
+            }
+            else
+            {
+               
+                Console.WriteLine();
+                Console.WriteLine(" GAGNE ");
+
+            }
+
 
         }
         static void Main(string[] args)
