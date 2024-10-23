@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Security.Authentication;
 using AsciiArt;
+
 
 namespace jeu_du_pendu
 {
@@ -105,7 +108,7 @@ namespace jeu_du_pendu
                         lettresEXclues.Add(lettre);
                         viesRestantes--;
                     }
-                
+
 
                     Console.WriteLine("Vies restantes : " + viesRestantes);
                 }
@@ -135,16 +138,40 @@ namespace jeu_du_pendu
 
         }
 
+        static string[] ChargerLesMots(string nomFichier)
+        {
+            try
+            {
+
+                return File.ReadAllLines(nomFichier);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur de lecture du ficher : " + nomFichier + " (" + ex.Message + ")");
+                Console.WriteLine();
+            }
+            return null;
+        }
 
         static void Main(string[] args)
         {
-            string mot = "ELEPHANT";
+            Random rand = new Random();
+            var mots = ChargerLesMots("mots.txt");
 
-            DevinerMot(mot);
-            //AfficherMot(mot, new List<char> { 'L', 'E', 'T', 'Z'  });
-            //char lettre = DemanderUneLettre();
-            //AfficherMot(mot, new List<char> { lettre });
+            if ((mots == null) || (mots.Length == 0))
+            {
+                Console.WriteLine("La liste des mots est vide ");
 
+            }
+            else
+            {
+                string mot = mots[0].Trim().ToUpper(); //efface les espace et convertir en majusculle 
+
+                int i = rand.Next(mots.Length);
+                DevinerMot(mots[i].Trim().ToUpper() ) ;
+
+
+            }
         }
     }
 }
