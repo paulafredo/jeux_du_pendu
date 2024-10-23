@@ -157,7 +157,7 @@ namespace jeu_du_pendu
         {
 
             
-            char reponse = DemanderUneLettre("Voulez-vous rejour (O / N )");
+            char reponse = DemanderUneLettre("Voulez-vous rejour (O / N ) : ");
             if (reponse == 'o' || reponse == 'O')
             {
                 return true;
