@@ -1,140 +1,149 @@
 ﻿using System;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Collections.Generic;
+using AsciiArt;
 
 namespace jeu_du_pendu
 {
-    internal class Program
+    class Program
     {
-        static void AfficherMots(string mot, List<char> lettres)
-        {
-            for (int i = 0; i < mot.Length; i++) // inférieur ac la longueur du mots 
-            {
-                char lettre = mot[i];  //exepmle mot[1]= E
 
+        static void AfficherMot(string mot, List<char> lettres)
+        {
+            // E L E _ _ _ _ _
+            for (int i = 0; i < mot.Length; i++)
+            {
+                char lettre = mot[i];
                 if (lettres.Contains(lettre))
                 {
                     Console.Write(lettre + " ");
-
                 }
-
                 else
                 {
                     Console.Write("_ ");
                 }
-
             }
+            Console.WriteLine();
         }
-        static bool ToutesLettresDevinees(string mots, List<char> lettres)
-        {
 
+        static bool ToutesLettresDevinees(string mot, List<char> lettres)
+        {
+            // true -> toutes les lettres ont été trouvées -> gagné
+            // false 
+            // ""
             foreach (var lettre in lettres)
             {
-                mots = mots.Replace(lettres.ToString(), ""); // prendre la premier letre du tableau et le remplacer en une ch vide 
-
+                mot = mot.Replace(lettre.ToString(), "");
             }
 
-            if (mots.Length == 0)
-
+            if (mot.Length == 0)
             {
                 return true;
             }
-
             return false;
-
         }
 
-        static char DemenderUneLettre()
+        static char DemanderUneLettre()
         {
+            // Rendrez une lettre
+            // ERREUR : Vous devez rentrer une seule lettre
+            // return -> majuscules (ToUpper)
 
             while (true)
-
             {
-
-                Console.Write("Rentrez une lettre : ");
+                Console.Write("Rendrez une lettre : ");
                 string reponse = Console.ReadLine();
-                if (reponse.Length == 1) //longueur du caractere 
+                if (reponse.Length == 1)
                 {
                     reponse = reponse.ToUpper();
                     return reponse[0];
                 }
-
-                Console.WriteLine("ERREUR : Vous devez rentrer un seuler lettre");
+                Console.WriteLine("ERREUR : Vous devez rentrer une lettre");
             }
-
-
         }
 
-        static void DevinerMots(string mots)
+
+        static void DevinerMot(string mot)
         {
-            var lettresDevines = new List<char>();
-            const int NBR_VIE = 6;
-            int ViesRestant = NBR_VIE;
+            // Boucler (true)
+            //  AfficherMot()
+            //  DemanderUneLettre
+            //      -> "Cette lettre est dans le mot" -> List<char> add ()
+            //      -> "Cette lettre n'est pas dans le mot"
 
-            while (ViesRestant > 0)
+            var lettresDevinees = new List<char>();
+            var lettresEXclues = new List<char>();
 
+            const int NB_VIES = 6;
+            int viesRestantes = NB_VIES;
+
+
+            while (viesRestantes > 0)
             {
-
-                AfficherMots(mots, lettresDevines);
+                Console.WriteLine(Ascii.PENDU[NB_VIES - viesRestantes]);
                 Console.WriteLine();
-                var lettre = DemenderUneLettre();
+                AfficherMot(mot, lettresDevinees);
+                Console.WriteLine();
+                var lettre = DemanderUneLettre();
                 Console.Clear();
 
-                if (mots.Contains(lettre))
+                if (mot.Contains(lettre))
                 {
-                    Console.WriteLine(" Cette lettre est dans le mots ");
-                    lettresDevines.Add(lettre);
-
-
-
-                    if (ToutesLettresDevinees(mots, lettresDevines))
+                    Console.WriteLine("Cette lettre est dans le mot");
+                    lettresDevinees.Add(lettre);
+                    // GAGNE
+                    if (ToutesLettresDevinees(mot, lettresDevinees))
                     {
-
-                      
+                        //Console.WriteLine("GAGNE !");
+                        //return;
                         break;
-
-
                     }
                 }
                 else
                 {
-                    Console.WriteLine(" Cette lettre n'est  pas dans le mots ");
-                    ViesRestant--;
-                    Console.WriteLine(" Vie restant : " + ViesRestant);
+                    if (!lettresEXclues.Contains(lettre))
+                    {
+                        lettresEXclues.Add(lettre);
+                        viesRestantes--;
+                    }
+                
 
+                    Console.WriteLine("Vies restantes : " + viesRestantes);
                 }
-                Console.WriteLine();
+
+                if (lettresEXclues.Count > 0)
+
+                {
+                    Console.WriteLine("Le mot ne contient pas les lettres  : " + string.Join(",", lettresEXclues));
+                    Console.WriteLine();
+                }
             }
 
-
-            if (ViesRestant == 0)
+            Console.WriteLine(Ascii.PENDU[NB_VIES - viesRestantes]);
+            if (viesRestantes == 0)
             {
-                Console.WriteLine("  PERDU ! LE MOTS ETAIT : " + mots);
 
+                Console.WriteLine("PERDU ! Le mot était : " + mot);
             }
             else
             {
-               
+                AfficherMot(mot, lettresDevinees);
                 Console.WriteLine();
-                Console.WriteLine(" GAGNE ");
 
+                Console.WriteLine("GAGNE !");
             }
 
 
         }
+
+
         static void Main(string[] args)
         {
-            string mots = "ELEPHANT";
+            string mot = "ELEPHANT";
 
-            DevinerMots(mots);
-
-            /*
-             char lettre = DemenderUneLettre();
-             AfficherMots(mots, new List<char> { lettre });
-
-             */
-
-
-
+            DevinerMot(mot);
+            //AfficherMot(mot, new List<char> { 'L', 'E', 'T', 'Z'  });
+            //char lettre = DemanderUneLettre();
+            //AfficherMot(mot, new List<char> { lettre });
 
         }
     }
